@@ -1,0 +1,14 @@
+[
+  {
+    "id": 0,
+    "name": "Coke",
+    "category": "Drinks",
+    "quantity": 10
+  },
+  {
+    "id": 1,
+    "name": "Bournvita",
+    "category": "Provision",
+    "quantity": 20
+  }
+]
