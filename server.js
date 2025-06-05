@@ -15,7 +15,7 @@ const server = http.createServer((req, res) => {
   if (req.method === "GET" && pathname === "/") {
     res.writeHead(200, "OK", { "content-type": "application/json" });
     res.end(JSON.stringify({ message: "Welcome to Shurah Product API!" }));
-  } else if (req.method === "GET" && pathname === "/products" && !query.id) {
+  } else if (req.method === "GET" && pathname === "/products") {
     fs.readFile(dataPath, { encoding: "utf-8" }, (err, data) => {
       if (err) {
         res.writeHead(500);
@@ -25,15 +25,6 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, "OK", { "content-type": "application/json" });
       res.end(data);
     });
-  } else if (req.method === "GET" && pathname === "/products" && query.id) {
-    res.writeHead(200, "OK", { "content-type": "application/json" });
-
-    const queryId = query.id;
-    const responseProduct = productsObj.filter(
-      (productObj) => productObj.id == queryId
-    );
-
-    res.end(JSON.stringify(responseProduct));
   } else if (req.method === "POST" && pathname === "/products") {
     let reqData = "";
     req.on("data", (chunk) => {
