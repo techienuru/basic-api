@@ -32,23 +32,34 @@ const server = http.createServer((req, res) => {
     });
 
     req.on("end", () => {
-      const parsedReqData = JSON.parse(reqData);
-
-      const newProductsObj = [...productsObj];
-      newProductsObj.push(parsedReqData);
-
       try {
-        fs.writeFile(dataPath, `\n${JSON.stringify(newProductsObj)}`, (err) => {
+        const reqDataObj = JSON.parse(reqData);
+
+        fs.readFile(dataPath, { encoding: "utf-8" }, (err, data) => {
           if (err) {
+            console.log("A file reading error occurred: ", err);
             res.writeHead(500);
-            return res.end("Error saving data");
+            res.end("Error reading products file");
           }
 
-          res.writeHead(201);
-          res.end("Data recieved & saved");
+          const products = JSON.parse(data);
+          // Auto assign ID to the new poduct
+          reqDataObj.id = products.length;
+          products.push(reqDataObj);
+
+          fs.writeFile(dataPath, JSON.stringify(products), (err) => {
+            if (err) {
+              res.writeHead(500);
+              res.end("Error saving new product");
+            }
+
+            res.writeHead(201);
+            res.end("Data saved successfully");
+          });
         });
       } catch (err) {
-        res.writeHead(400);
+        console.log("An error occurred: ", err);
+        res.writeHead(404);
         res.end("Invalid JSON");
       }
     });

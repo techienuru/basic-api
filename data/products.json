@@ -1,5 +1,6 @@
 [
   { "id": 0, "name": "Coke", "category": "Drinks", "quantity": 10 },
   { "id": 1, "name": "Bournvita", "category": "Provision", "quantity": 20 },
-  { "name": "Amstel Malt", "category": "Drinks", "quantity": 1 }
+  { "name": "Amstel Malt", "category": "Drinks", "quantity": 1, "id": 2 },
+  { "name": "Mirinda", "category": "Drinks", "quantity": 100, "id": 3 }
 ]
