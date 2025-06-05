@@ -8,10 +8,6 @@ const HOSTNAME = "127.0.0.1";
 
 const dataPath = path.join(__dirname, "data/products.json");
 
-const productsJson = fs.readFileSync(dataPath, { encoding: "utf-8" });
-
-const productsObj = JSON.parse(productsJson);
-
 const server = http.createServer((req, res) => {
   const parsedURL = url.parse(req.url, true);
   const { pathname, query } = parsedURL;
@@ -20,8 +16,15 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, "OK", { "content-type": "application/json" });
     res.end(JSON.stringify({ message: "Welcome to Shurah Product API!" }));
   } else if (req.method === "GET" && pathname === "/products" && !query.id) {
-    res.writeHead(200, "OK", { "content-type": "application/json" });
-    res.end(productsJson);
+    fs.readFile(dataPath, { encoding: "utf-8" }, (err, data) => {
+      if (err) {
+        res.writeHead(500);
+        res.end("Failed to read Products");
+      }
+
+      res.writeHead(200, "OK", { "content-type": "application/json" });
+      res.end(data);
+    });
   } else if (req.method === "GET" && pathname === "/products" && query.id) {
     res.writeHead(200, "OK", { "content-type": "application/json" });
 
