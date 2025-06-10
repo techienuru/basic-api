@@ -12,6 +12,8 @@ This report explores the capabilities of **Node.js** in building scalable web ap
 
 Node.js operates on a non-blocking, asynchronous I/O model. This means I/O operations such as reading from a file, database query, or network requests don't block the main thread. Instead, callbacks are used to handle these operations once completed.
 
+Node.js uses non-blocking I/O operations to handle multiple requests simultaneously. When performing file operations (`fs.readFile`, `fs.writeFile`), database queries, or network requests, the event loop continues handling other tasks while waiting for the operation to complete. This eliminates performance bottlenecks in high-traffic applications.
+
 **Example**:
 
 ```js
@@ -27,9 +29,17 @@ This allows Node.js to handle many connections at once without waiting for each 
 
 Node.js runs on a single thread but uses an event loop to manage concurrent operations. The loop checks for events (e.g., incoming requests), and delegates heavy tasks (I/O) to background workers, ensuring the main thread remains responsive.
 
+Unlike traditional multi-threaded servers, Node.js operates with a single-threaded event loop, managing multiple requests asynchronously without blocking execution. It delegates CPU-intensive operations to worker threads via the `worker_threads` module, optimizing resource management.
+
 ### 🔗 Handling Concurrent Connections
 
 Thanks to the event loop and asynchronous nature, Node.js can handle thousands of concurrent connections efficiently. Instead of spawning new threads per connection (like traditional models), Node.js handles all requests in a single thread.
+
+Node.js can handle thousands of concurrent connections efficiently using **Clustering** (`cluster` module) or **Worker Threads** (`worker_threads` module). These allow scaling beyond a single thread by utilizing multi-core processors effectively.
+
+#### Powered by V8 Engine
+
+The **V8 JavaScript engine** developed by Google compiles JavaScript into highly efficient machine code, ensuring fast execution. It optimizes memory usage and improves execution speed, making JavaScript as performant as low-level languages like C++.
 
 ---
 
