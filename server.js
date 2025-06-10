@@ -33,7 +33,7 @@ const server = http.createServer((req, res) => {
 
     req.on("end", () => {
       try {
-        const reqDataObj = JSON.parse(reqData);
+        let reqDataObj = JSON.parse(reqData);
 
         fs.readFile(dataPath, { encoding: "utf-8" }, (err, data) => {
           if (err) {
@@ -42,9 +42,13 @@ const server = http.createServer((req, res) => {
             res.end("Error reading products file");
           }
 
-          const products = JSON.parse(data);
-          // Auto assign ID to the new poduct
-          reqDataObj.id = products.length;
+          let products = JSON.parse(data);
+          // Creating an ID for the new poduct
+          const newId = products.length;
+          // Putting the ID as the first property
+          reqDataObj = { id: newId, ...reqDataObj };
+
+          // Adding the new Product to the end of the Array (containing previous products)
           products.push(reqDataObj);
 
           fs.writeFile(dataPath, JSON.stringify(products), (err) => {
@@ -54,7 +58,7 @@ const server = http.createServer((req, res) => {
             }
 
             res.writeHead(201);
-            res.end("Data saved successfully");
+            res.end("Product added successfully");
           });
         });
       } catch (err) {
@@ -63,6 +67,79 @@ const server = http.createServer((req, res) => {
         res.end("Invalid JSON");
       }
     });
+  } else if (req.method === "PUT" && pathname === "/products") {
+    const { id } = query;
+    let reqData = "";
+
+    req.on("data", (chunk) => {
+      reqData += chunk;
+    });
+
+    req.on("end", () => {
+      try {
+        const reqDataObj = JSON.parse(reqData);
+
+        fs.readFile(dataPath, "utf-8", (err, data) => {
+          if (err) {
+            res.writeHead(500);
+            res.end("Error updating product. Failed to read file");
+          }
+
+          const productsObj = JSON.parse(data);
+
+          const newProducts = productsObj.map((product) => {
+            if (product.id == id) {
+              const productId = product.id;
+              const updatedProduct = { id: productId, ...reqDataObj };
+              return updatedProduct;
+            } else {
+              return product;
+            }
+          });
+
+          fs.writeFile(dataPath, JSON.stringify(newProducts), (err) => {
+            if (err) {
+              res.writeHead(500);
+              res.end("Error updating file. Failed to write to file");
+            }
+
+            res.writeHead(201);
+            res.end("Product updated successfully");
+          });
+        });
+      } catch (err) {
+        res.writeHead(500);
+        res.end("Invalid JSON");
+      }
+    });
+  } else if (req.method === "DELETE" && pathname === "/products") {
+    try {
+      const { id } = query;
+      if (!id) {
+        throw new Error("Invalid Parameter");
+      }
+
+      fs.readFile(dataPath, { encoding: "utf-8" }, (err, data) => {
+        if (err) {
+          res.writeHead(500);
+          res.end("Error deleting product. Failed to read");
+        }
+        const productsObj = JSON.parse(data);
+        const newProducts = productsObj.filter((product) => product.id != id);
+
+        fs.writeFile(dataPath, JSON.stringify(newProducts), (err) => {
+          if (err) {
+            res.writeHead(500);
+            res.end("Error deleting product. Failed to write");
+          }
+
+          res.end("Product deleted successfully");
+        });
+      });
+    } catch (err) {
+      res.writeHead(404);
+      res.end(err.message);
+    }
   } else {
     res.writeHead(404, "Not Found", { "content-type": "text/html" });
     res.end("<h1>404! Page Not Found</h1>");
