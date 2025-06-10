@@ -20,6 +20,8 @@ A simple, scalable Node.js web application demonstrating how to handle multiple 
 
 - View all products (`GET /products`)
 - Add new products (`POST /products`)
+- Update a product (`PUT /products?id=ID`)
+- Delete a product (`DELETE /products?id=ID`)
 - Handles multiple connections concurrently using non-blocking I/O
 - Reads from and writes to `products.json` file
 - No external frameworks (built entirely with Node.js core modules)
@@ -116,7 +118,41 @@ Adds a new product to the list.
 **Success Response:**
 
 ```
-Data saved successfully
+Product added successfully
+```
+
+---
+
+### 4. `PUT /products?id=0`
+
+Updates an existing product with the given id.
+
+**Request Body (JSON):**
+
+```json
+{
+  "name": "Milo",
+  "category": "Provision",
+  "quantity": 15
+}
+```
+
+**Success Response:**
+
+```
+Product updated successfully
+```
+
+---
+
+### 5. `DELETE /products?id=0`
+
+Deletes the product with the specified id.
+
+**Success Response:**
+
+```
+Product deleted successfully
 ```
 
 ---
@@ -155,8 +191,7 @@ This project showcases Node.js’s non-blocking I/O and asynchronous event loop 
 
 ## 🔮 Future Improvements
 
-- Add `PUT /products/:id` to update a product.
-- Add `DELETE /products/:id` to remove a product.
-- Add validations for request body.
+- Add validation for product fields.
+- Handle error responses with more clarity and consistency.
 - Use `stream` module for large file handling.
 - Persist data with a database like MongoDB or PostgreSQL.
