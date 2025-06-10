@@ -96,11 +96,18 @@ npm is Node.js's package manager and is essential for modern development:
 
 3. **Error Handling Issues**
 
-   - Errors in asynchronous code can be harder to trace.
+   - **Uncaught Exceptions & Process Crashes:** Unlike traditional multi-threaded environments, an unhandled error in Node.js can cause the entire application to crash. To mitigate this, process managers like PM2 can be used to restart the application upon failure.
+   - **Lack of Strong Typing:** JavaScript, the language of Node.js, is dynamically typed, making debugging runtime errors more difficult compared to statically typed languages like Java or TypeScript.
+   - **Async Error Handling Issues:** Handling errors in asynchronous operations (such as database queries and API requests) requires careful structuring using `try...catch`, promise chaining, or async/await patterns. Poor handling can lead to "callback hell" or promise race conditions.
+   - **Limited Built-in Debugging Tools:** While Node.js provides basic debugging options, deeper error tracking requires external monitoring tools like Sentry, New Relic, or Datadog.
 
 4. **Database Query Challenges**
 
    - Requires extra handling for relational databases due to async behavior.
+   - **Single-Threaded Limitations:** Node.js runs on a single-threaded event loop, which means CPU-intensive database queries can block execution, leading to performance bottlenecks in high-load applications.
+   - **Concurrency Issues:** Unlike traditional multi-threaded environments, handling multiple simultaneous database connections requires careful connection pooling strategies (e.g., using MySQL connection pooling or PostgreSQL’s built-in scaling solutions).
+   - **ORM Complexity:** While ORMs like Sequelize and TypeORM simplify database interactions, they add an abstraction layer that can reduce performance compared to raw SQL queries.
+   - **Heavy Reads/Writes Impact:** Applications with massive read/write operations (e.g., analytics platforms or log systems) may struggle with performance unless optimized databases (such as PostgreSQL or Cassandra) are used instead of traditional MySQL or MongoDB.
 
 ---
 
